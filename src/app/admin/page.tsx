@@ -1,20 +1,3 @@
-/**
- * Admin Dashboard — Protected route for managing items and viewing analytics.
- * 
- * Security: Uses a mock authentication system with hardcoded credentials
- * (admin / admin123) for demonstration purposes. In a production app,
- * this would be replaced with Supabase Auth or a similar service.
- * 
- * Features:
- * - Login gate with session persistence (sessionStorage, not localStorage)
- * - Items management table (Approve, Delete, Mark Returned)
- * - Claims review table
- * - Analytics dashboard with Recharts bar chart
- * 
- * The tab-based layout keeps all admin functions accessible from one page,
- * reducing navigation overhead for busy administrators.
- */
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -73,11 +56,8 @@ import {
 } from "@/lib/actions";
 import { Item, Claim } from "@/lib/types";
 
-// ─── Mock Authentication ─────────────────────────────────
-// In production, replace with Supabase Auth
 const MOCK_ADMIN = { username: "admin", password: "admin123" };
 
-// ─── Chart Colors ────────────────────────────────────────
 const CHART_COLORS = ["#ef4444", "#22c55e", "#3b82f6", "#f59e0b"];
 
 export default function AdminPage() {
@@ -86,7 +66,6 @@ export default function AdminPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    // Check if already logged in (session only, not persistent)
     useEffect(() => {
         const session = sessionStorage.getItem("admin_session");
         if (session === "true") {
@@ -110,7 +89,6 @@ export default function AdminPage() {
         setIsAuthenticated(false);
     };
 
-    // ─── Login Screen ──────────────────────────────────────
     if (!isAuthenticated) {
         return (
             <div className="min-h-[80vh] flex items-center justify-center px-4">
@@ -176,11 +154,9 @@ export default function AdminPage() {
         );
     }
 
-    // ─── Authenticated Dashboard ───────────────────────────
     return <AdminDashboard onLogout={handleLogout} />;
 }
 
-// ─── Dashboard Component (after login) ───────────────────
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     const [items, setItems] = useState<Item[]>([]);
     const [claims, setClaims] = useState<Claim[]>([]);
@@ -217,7 +193,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         fetchData();
     }, []);
 
-    // ── Item Actions ───────────────────────────────────────
     const handleApprove = async (id: string) => {
         setActionLoading(id);
         await updateItemStatus(id, "approved");
@@ -241,7 +216,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         }
     };
 
-    // ── Claim Actions ──────────────────────────────────────
     const handleClaimAction = async (id: string, status: "approved" | "denied") => {
         setActionLoading(id);
         await updateClaimStatus(id, status);
@@ -249,7 +223,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         setActionLoading(null);
     };
 
-    // ── Chart Data ─────────────────────────────────────────
     const barChartData = [
         { name: "Lost", count: analytics.lostItems, fill: "#ef4444" },
         { name: "Found", count: analytics.foundItems, fill: "#22c55e" },
@@ -274,7 +247,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                     <h1 className="text-3xl font-bold">Admin Dashboard</h1>
@@ -285,7 +257,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 </Button>
             </div>
 
-            {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 {[
                     { icon: Package, label: "Total Items", value: analytics.totalItems, color: "text-blue-500" },
@@ -305,7 +276,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 ))}
             </div>
 
-            {/* Tabs */}
             <Tabs defaultValue="items" className="space-y-4">
                 <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="items" className="gap-2">
@@ -319,7 +289,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     </TabsTrigger>
                 </TabsList>
 
-                {/* ── Items Table ──────────────────────────────────── */}
                 <TabsContent value="items">
                     <Card>
                         <CardHeader>
@@ -441,7 +410,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     </Card>
                 </TabsContent>
 
-                {/* ── Claims Table ─────────────────────────────────── */}
                 <TabsContent value="claims">
                     <Card>
                         <CardHeader>
@@ -528,10 +496,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     </Card>
                 </TabsContent>
 
-                {/* ── Analytics Tab ────────────────────────────────── */}
                 <TabsContent value="analytics">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Bar Chart — Items by Status */}
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
@@ -566,7 +532,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                             </CardContent>
                         </Card>
 
-                        {/* Pie Chart — Item Distribution */}
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">

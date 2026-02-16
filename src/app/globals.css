@@ -6,7 +6,6 @@
 
 @layer base {
   :root {
-    /* Academic Trust Theme — Deep Navy + Gold */
     --background: 0 0% 100%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
@@ -43,19 +42,19 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  /* Enhanced focus styles for accessibility */
   *:focus-visible {
     @apply outline-2 outline-offset-2 outline-primary ring-0;
   }
 
-  /* Skip to main content link for screen readers */
   .skip-link {
     @apply absolute -top-10 left-4 z-[100] bg-primary text-primary-foreground px-4 py-2 rounded-md transition-all;
   }
+
   .skip-link:focus {
     @apply top-4;
   }
@@ -65,18 +64,15 @@
   .text-balance {
     text-wrap: balance;
   }
-  
-  /* Glass morphism utility */
+
   .glass {
     @apply bg-white/80 backdrop-blur-lg border border-white/20;
   }
 
-  /* Gradient text utility */
   .gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))];
   }
 
-  /* Smooth scroll for the whole page */
   html {
     scroll-behavior: smooth;
   }

@@ -1,13 +1,5 @@
--- ============================================================
--- Supabase Schema for School Lost & Found Application
--- Run this SQL in your Supabase SQL Editor to set up the database.
--- ============================================================
-
--- Enable UUID generation
 create extension if not exists "uuid-ossp";
 
--- ─── Items Table ────────────────────────────────────────────
--- Stores all lost and found item reports
 create table if not exists items (
   id uuid default uuid_generate_v4() primary key,
   title text not null,
@@ -24,8 +16,6 @@ create table if not exists items (
   created_at timestamp with time zone default now()
 );
 
--- ─── Claims Table ───────────────────────────────────────────
--- Tracks claim attempts on items
 create table if not exists claims (
   id uuid default uuid_generate_v4() primary key,
   item_id uuid not null references items(id) on delete cascade,
@@ -36,34 +26,24 @@ create table if not exists claims (
   created_at timestamp with time zone default now()
 );
 
--- ─── Row Level Security ─────────────────────────────────────
--- Enable RLS but allow all operations with the anon key for this demo.
--- In production, you'd restrict this to authenticated users only.
-
 alter table items enable row level security;
 alter table claims enable row level security;
 
--- Allow public read access to approved items
 create policy "Anyone can view approved items" on items
   for select using (status = 'approved');
 
--- Allow anyone to insert items (report form)
 create policy "Anyone can create items" on items
   for insert with check (true);
 
--- Allow anyone to read all items (needed for admin)
 create policy "Admin can view all items" on items
   for select using (true);
 
--- Allow updates (admin actions)
 create policy "Admin can update items" on items
   for update using (true);
 
--- Allow deletes (admin actions)
 create policy "Admin can delete items" on items
   for delete using (true);
 
--- Claims policies
 create policy "Anyone can create claims" on claims
   for insert with check (true);
 
@@ -72,17 +52,6 @@ create policy "Anyone can view claims" on claims
 
 create policy "Admin can update claims" on claims
   for update using (true);
-
--- ─── Storage Bucket ─────────────────────────────────────────
--- Create a public bucket for item images
--- Note: Run this in the Supabase Dashboard → Storage → New Bucket
--- Bucket name: item-images
--- Public: Yes
--- Allowed MIME types: image/jpeg, image/png, image/webp, image/gif
--- Max file size: 5MB
-
--- ─── Sample Data (Optional) ─────────────────────────────────
--- Uncomment the lines below to add sample data for testing
 
 insert into items (title, description, category, type, location, date_occurred, time_occurred, contact_email, image_url, status, security_answer) values
   ('Blue Hydroflask Water Bottle', 'A blue 32oz Hydroflask water bottle with stickers on it. Has a dent on the bottom.', 'accessories', 'found', 'Cafeteria', '2026-02-14', '12:30 PM', 'finder@school.edu', null, 'approved', 'stickers of mountains and a sunrise'),
