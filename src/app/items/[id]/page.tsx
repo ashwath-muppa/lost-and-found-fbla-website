@@ -1,14 +1,3 @@
-/**
- * Item Detail Page — Dynamic route for individual item details.
- * 
- * This page uses Next.js dynamic routing ([id]) to create a unique URL
- * for every item. This is important for shareability — users can copy
- * and share the link to a specific item.
- * 
- * The claim flow is handled by the ClaimModal component, which includes
- * a security question to prevent unauthorized claims.
- */
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -36,7 +25,6 @@ import ClaimModal from "@/components/ClaimModal";
 import { getItemById } from "@/lib/actions";
 import { Item } from "@/lib/types";
 
-/** Maps category slugs to readable labels */
 const categoryLabels: Record<string, string> = {
     electronics: "Electronics",
     clothing: "Clothing",
@@ -46,13 +34,6 @@ const categoryLabels: Record<string, string> = {
     other: "Other",
 };
 
-/**
- * Obfuscates an email address for privacy protection.
- * Example: "john.doe@school.edu" → "j*****e@school.edu"
- * 
- * This is a simple technique to show contact info exists without
- * exposing the full address to prevent spam/phishing.
- */
 function obfuscateEmail(email: string): string {
     const [local, domain] = email.split("@");
     if (local.length <= 2) return `${local[0]}*@${domain}`;
@@ -106,12 +87,10 @@ export default function ItemDetailPage() {
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-            {/* Back Link */}
             <Link href="/browse" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
                 <ArrowLeft className="mr-1 h-4 w-4" /> Back to all items
             </Link>
 
-            {/* Success Banner (shown after new report submission) */}
             {isNewlyCreated && (
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -134,7 +113,6 @@ export default function ItemDetailPage() {
                 transition={{ duration: 0.4 }}
             >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Left Column — Image */}
                     <div>
                         <div className="relative aspect-square rounded-2xl overflow-hidden bg-muted border">
                             {item.image_url ? (
@@ -154,9 +132,7 @@ export default function ItemDetailPage() {
                         </div>
                     </div>
 
-                    {/* Right Column — Details */}
                     <div className="space-y-6">
-                        {/* Badges */}
                         <div className="flex flex-wrap gap-2">
                             <Badge
                                 className={
@@ -186,7 +162,6 @@ export default function ItemDetailPage() {
                             )}
                         </div>
 
-                        {/* Title & Description */}
                         <div>
                             <h1 className="text-2xl md:text-3xl font-bold mb-3">{item.title}</h1>
                             <p className="text-muted-foreground leading-relaxed">{item.description}</p>
@@ -194,7 +169,6 @@ export default function ItemDetailPage() {
 
                         <Separator />
 
-                        {/* Metadata Grid */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex items-start gap-3">
                                 <MapPin className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
@@ -231,7 +205,6 @@ export default function ItemDetailPage() {
 
                         <Separator />
 
-                        {/* Reported Date */}
                         <p className="text-xs text-muted-foreground">
                             Reported on {new Date(item.created_at).toLocaleDateString("en-US", {
                                 weekday: "long",
@@ -241,7 +214,6 @@ export default function ItemDetailPage() {
                             })}
                         </p>
 
-                        {/* Claim Button */}
                         {item.status === "approved" && (
                             <ClaimModal itemId={item.id} itemTitle={item.title} />
                         )}

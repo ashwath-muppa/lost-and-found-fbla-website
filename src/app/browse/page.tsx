@@ -1,18 +1,3 @@
-/**
- * Browse Page — Grid view of all lost/found items with filtering & search.
- * 
- * Features:
- * - Fuzzy search using Fuse.js (searches title + description simultaneously)
- * - Multi-criteria filtering (status, category, date range)
- * - Responsive grid layout
- * - Empty state and loading skeletons
- * 
- * Why Fuse.js? Traditional SQL LIKE queries can't handle typos or partial
- * matches. Fuse.js uses a weighted scoring algorithm that finds "close enough"
- * matches, which is critical for a lost & found app where users might
- * misspell item names.
- */
-
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
@@ -37,7 +22,6 @@ export default function BrowsePage() {
     const [filterCategory, setFilterCategory] = useState<ItemCategory | "all">("all");
     const [showFilters, setShowFilters] = useState(false);
 
-    // Fetch items on component mount
     useEffect(() => {
         async function fetchItems() {
             try {
@@ -52,12 +36,6 @@ export default function BrowsePage() {
         fetchItems();
     }, []);
 
-    /**
-     * Fuse.js configuration for fuzzy search.
-     * We search both title and description, with title weighted higher
-     * because it's more likely what users are searching for.
-     * The threshold of 0.4 allows some fuzziness without too many false positives.
-     */
     const fuse = useMemo(
         () =>
             new Fuse(items, {
@@ -71,24 +49,17 @@ export default function BrowsePage() {
         [items]
     );
 
-    /**
-     * Applies both fuzzy search and hard filters.
-     * Search narrows by relevance, filters narrow by exact match.
-     */
     const filteredItems = useMemo(() => {
         let result = items;
 
-        // Apply fuzzy search if there's a query
         if (searchQuery.trim()) {
             result = fuse.search(searchQuery).map((r) => r.item);
         }
 
-        // Apply type filter
         if (filterType !== "all") {
             result = result.filter((item) => item.type === filterType);
         }
 
-        // Apply category filter
         if (filterCategory !== "all") {
             result = result.filter((item) => item.category === filterCategory);
         }
@@ -106,7 +77,6 @@ export default function BrowsePage() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            {/* Page Header */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -118,10 +88,8 @@ export default function BrowsePage() {
                 </p>
             </motion.div>
 
-            {/* Search & Filter Bar */}
             <div className="mb-6 space-y-4">
                 <div className="flex gap-3">
-                    {/* Search Input */}
                     <div className="relative flex-1">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -143,7 +111,6 @@ export default function BrowsePage() {
                         )}
                     </div>
 
-                    {/* Filter Toggle */}
                     <Button
                         variant={showFilters ? "default" : "outline"}
                         onClick={() => setShowFilters(!showFilters)}
@@ -161,7 +128,6 @@ export default function BrowsePage() {
                     </Button>
                 </div>
 
-                {/* Filter Panel */}
                 {showFilters && (
                     <motion.div
                         id="filter-panel"
@@ -171,7 +137,6 @@ export default function BrowsePage() {
                         className="p-4 bg-muted/50 rounded-xl border"
                     >
                         <div className="flex flex-wrap gap-6">
-                            {/* Type Filter */}
                             <div className="space-y-2">
                                 <Label className="text-sm font-medium">Status</Label>
                                 <div className="flex gap-2">
@@ -201,7 +166,6 @@ export default function BrowsePage() {
                                 </div>
                             </div>
 
-                            {/* Category Filter */}
                             <div className="space-y-2">
                                 <Label className="text-sm font-medium">Category</Label>
                                 <div className="flex flex-wrap gap-2">
@@ -246,14 +210,12 @@ export default function BrowsePage() {
                     </motion.div>
                 )}
 
-                {/* Results count */}
                 <p className="text-sm text-muted-foreground">
                     Showing {filteredItems.length} of {items.length} items
                     {searchQuery && ` matching "${searchQuery}"`}
                 </p>
             </div>
 
-            {/* Items Grid */}
             {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (

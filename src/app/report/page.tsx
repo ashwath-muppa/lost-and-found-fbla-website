@@ -1,15 +1,3 @@
-/**
- * Report Page — Multi-step form wizard for reporting lost/found items.
- * 
- * This is the most complex page in the application. It uses a 4-step wizard
- * pattern because asking for all information at once would overwhelm users.
- * Each step validates independently using Zod, and the form state persists
- * across steps using React Hook Form's built-in state management.
- * 
- * The wizard reads the `type` query parameter from the URL to pre-select
- * "Lost" or "Found" when coming from the homepage CTA buttons.
- */
-
 "use client";
 
 import React, { useState, Suspense } from "react";
@@ -80,16 +68,11 @@ function ReportFormContent() {
     const watchType = watch("type");
     const watchCategory = watch("category");
 
-    /**
-     * Validates the current step before allowing navigation to the next.
-     * This per-step validation provides immediate feedback without waiting
-     * for the final submit, improving the user experience.
-     */
     const validateStep = async (): Promise<boolean> => {
         const fieldsPerStep: (keyof ReportFormData)[][] = [
             ["type", "category", "title"],
             ["date_occurred", "time_occurred", "location", "description"],
-            [], // Photo step — no required fields
+            [],
             ["contact_email", "security_answer"],
         ];
         return trigger(fieldsPerStep[currentStep]);
@@ -109,13 +92,11 @@ function ReportFormContent() {
         setSubmitError(null);
 
         try {
-            // Upload image first if one was selected
             let imageUrl: string | null = null;
             if (selectedFile) {
                 imageUrl = await uploadImage(selectedFile);
             }
 
-            // Create the item in the database
             const item = await createItem(data, imageUrl);
 
             if (item) {
@@ -132,7 +113,6 @@ function ReportFormContent() {
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-3xl">
-            {/* Page Header */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -144,10 +124,8 @@ function ReportFormContent() {
                 </p>
             </motion.div>
 
-            {/* Step Progress Bar */}
             <div className="mb-8">
                 <div className="flex items-center justify-between relative">
-                    {/* Connection line behind the steps */}
                     <div className="absolute top-5 left-0 right-0 h-0.5 bg-border" aria-hidden="true" />
                     <div
                         className="absolute top-5 left-0 h-0.5 bg-primary transition-all duration-500"
@@ -191,7 +169,6 @@ function ReportFormContent() {
                 </div>
             </div>
 
-            {/* Form Steps */}
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Card className="border-border/50 shadow-sm">
                     <CardHeader>
@@ -208,10 +185,8 @@ function ReportFormContent() {
                                 exit={{ opacity: 0, x: -20 }}
                                 transition={{ duration: 0.2 }}
                             >
-                                {/* ── Step 1: Item Details ──────────────────── */}
                                 {currentStep === 0 && (
                                     <div className="space-y-6">
-                                        {/* Lost vs Found toggle */}
                                         <div className="space-y-2">
                                             <Label>Did you lose or find this item? *</Label>
                                             <div className="grid grid-cols-2 gap-3">
@@ -251,7 +226,6 @@ function ReportFormContent() {
                                             )}
                                         </div>
 
-                                        {/* Category Selection */}
                                         <div className="space-y-2">
                                             <Label>Category *</Label>
                                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -279,7 +253,6 @@ function ReportFormContent() {
                                             )}
                                         </div>
 
-                                        {/* Title */}
                                         <div className="space-y-2">
                                             <Label htmlFor="title">Item Title *</Label>
                                             <Input
@@ -298,7 +271,6 @@ function ReportFormContent() {
                                     </div>
                                 )}
 
-                                {/* ── Step 2: When & Where ──────────────────── */}
                                 {currentStep === 1 && (
                                     <div className="space-y-6">
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -335,7 +307,6 @@ function ReportFormContent() {
                                             </div>
                                         </div>
 
-                                        {/* Location Selection */}
                                         <div className="space-y-2">
                                             <Label htmlFor="location">Location *</Label>
                                             <select
@@ -359,7 +330,6 @@ function ReportFormContent() {
                                             )}
                                         </div>
 
-                                        {/* Description */}
                                         <div className="space-y-2">
                                             <Label htmlFor="description">Description *</Label>
                                             <Textarea
@@ -382,7 +352,6 @@ function ReportFormContent() {
                                     </div>
                                 )}
 
-                                {/* ── Step 3: Photo Upload ──────────────────── */}
                                 {currentStep === 2 && (
                                     <div className="space-y-4">
                                         <p className="text-sm text-muted-foreground">
@@ -398,7 +367,6 @@ function ReportFormContent() {
                                     </div>
                                 )}
 
-                                {/* ── Step 4: Contact & Security ───────────── */}
                                 {currentStep === 3 && (
                                     <div className="space-y-6">
                                         <div className="space-y-2">
@@ -456,7 +424,6 @@ function ReportFormContent() {
                     </CardContent>
                 </Card>
 
-                {/* Navigation Buttons */}
                 <div className="flex justify-between mt-6">
                     <Button
                         type="button"
@@ -491,10 +458,6 @@ function ReportFormContent() {
     );
 }
 
-/**
- * Wraps the form content in Suspense because useSearchParams()
- * requires a Suspense boundary in Next.js 14 App Router.
- */
 export default function ReportPage() {
     return (
         <Suspense

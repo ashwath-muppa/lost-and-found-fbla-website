@@ -1,15 +1,3 @@
-/**
- * Landing Page — The first page users see.
- * 
- * Design philosophy: The hero section uses two massive, color-coded CTA buttons
- * to immediately guide users to the right action. Red = urgency (lost something),
- * Green = helpfulness (found something). This dual-CTA pattern reduces decision
- * fatigue and gets users to the right flow instantly.
- * 
- * The "Recent Activity" ticker shows real-time items to build trust and show
- * the platform is active.
- */
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -23,7 +11,6 @@ import { getRecentItems, getAnalytics } from "@/lib/actions";
 import { Item } from "@/lib/types";
 import ItemCard from "@/components/ItemCard";
 
-// Animation variants for staggered entrance effects
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -69,9 +56,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      {/* ── Hero Section ──────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-primary/90">
-        {/* Decorative background elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-10 w-72 h-72 bg-[hsl(var(--accent))] rounded-full blur-3xl" />
           <div className="absolute bottom-10 right-20 w-96 h-96 bg-blue-400 rounded-full blur-3xl" />
@@ -99,7 +84,6 @@ export default function HomePage() {
               belongings, and reunite with their possessions — quickly and safely.
             </p>
 
-            {/* ── Dual CTA Buttons ──────────────────────────── */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -129,7 +113,6 @@ export default function HomePage() {
           </motion.div>
         </div>
 
-        {/* Wave divider */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full" preserveAspectRatio="none">
             <path d="M0 120L60 110C120 100 240 80 360 73.3C480 67 600 73 720 80C840 87 960 93 1080 90C1200 87 1320 73 1380 66.7L1440 60V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="hsl(var(--background))" />
@@ -137,7 +120,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Stats Bar ─────────────────────────────────────────── */}
       <section className="container mx-auto px-4 -mt-6 relative z-20">
         <motion.div
           variants={containerVariants}
@@ -168,7 +150,6 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* ── How It Works ──────────────────────────────────────── */}
       <section className="container mx-auto px-4 py-20">
         <motion.div
           initial={{ opacity: 0 }}
@@ -225,7 +206,6 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* ── Recent Activity ───────────────────────────────────── */}
       <section className="bg-muted/30 py-20">
         <div className="container mx-auto px-4">
           <motion.div
@@ -276,7 +256,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── CTA Banner ────────────────────────────────────────── */}
       <section className="container mx-auto px-4 py-20">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}

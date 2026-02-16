@@ -1,11 +1,3 @@
-/**
- * Root Layout — The top-level layout wrapper for the entire application.
- * 
- * This layout applies the Inter font globally, includes the NavBar and Footer
- * on every page, and uses semantic HTML elements (<main>) for accessibility.
- * The skip-to-content link allows keyboard users to bypass navigation.
- */
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -29,7 +21,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen flex flex-col font-sans">
-        {/* Skip-to-content link for keyboard accessibility */}
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
